@@ -5,6 +5,7 @@ import pickle
 import time
 from utils import RangeAdjust
 from statistics import median_low, median_high
+from name_tag import draw_name_tag
 
 # Init socket and server-linked variables
 UDP_IP = "127.0.0.1"
@@ -57,12 +58,23 @@ res = hg.PipelineResources()
 
 hg.AddAssetsFolder("server_client_demo_compiled")
 hg.ImGuiInit(10, hg.LoadProgramFromAssets('core/shader/imgui'), hg.LoadProgramFromAssets('core/shader/imgui_image'))
+line_shader = hg.LoadProgramFromAssets('core/shader/white')
+name_shader = hg.LoadProgramFromAssets('core/shader/grey')
+font = hg.LoadFontFromAssets('font/ticketing.ttf', 96)
+font_prg = hg.LoadProgramFromAssets('core/shader/font')
+text_uniform_values = [hg.MakeUniformSetValue('u_color', hg.Vec4(1, 1, 1))]
+text_render_state = hg.ComputeRenderState(hg.BM_Alpha, hg.DT_Always, hg.FC_Disabled)
 
+vtx_layout = hg.VertexLayout()
+vtx_layout.Begin()
+vtx_layout.Add(hg.A_Position, 3, hg.AT_Float)
+vtx_layout.End()
 
 # load scene
 scene = hg.Scene()
 hg.LoadSceneFromAssets("level_1_full.scn", scene, res, hg.GetForwardPipelineInfo())
 cam = scene.GetNode('Camera')
+cam_rot = scene.GetNode('camrotation')
 
 # AAA pipeline
 pipeline_aaa_config = hg.ForwardPipelineAAAConfig()
@@ -80,6 +92,10 @@ frame = 0
 show_lerp = True
 show_pred = True
 show_real = True
+vid_scene_opaque = 0
+vtx_2 = hg.Vertices(vtx_layout, 2)
+vtx_4 = hg.Vertices(vtx_layout, 4)
+
 
 while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 	keyboard.Update()
@@ -118,12 +134,10 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 
 			time_end = updated_time + avg_time_diff
 			if time.time() < time_end:
-				if time_awaiting_packet != 0:
-					print(hg.time_to_sec_f(time_awaiting_packet))
 				adjusted_time = RangeAdjust(time.time(), updated_time, time_end, 0, 1)
 				wanted_pos = hg.Lerp(player_old_pos, player_updated_pos, adjusted_time)
 				wanted_rot = hg.Lerp(player_old_rot, player_updated_rot, adjusted_time)
-
+				draw_name_tag(vtx_2, vtx_4, wanted_pos, line_shader, name_shader, vid_scene_opaque, "Remote " + str(pinstance[1] + 1), font, font_prg, text_uniform_values, text_render_state, cam.GetTransform().GetWorld())
 				if show_lerp:
 					player_transform.SetPos(wanted_pos)
 					player_transform.SetRot(wanted_rot)
@@ -144,6 +158,7 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 				time_awaiting_packet = 0
 			else:
 				time_awaiting_packet += dt
+				draw_name_tag(vtx_2, vtx_4, player_updated_pos, line_shader, name_shader, vid_scene_opaque, "Remote " + str(pinstance[1] + 1), font, font_prg, text_uniform_values, text_render_state, cam.GetTransform().GetWorld())
 
 			if show_real:
 				player_nolerp_transform.SetPos(hg.Vec3(players[player_id][0], 0, players[player_id][1]))
@@ -178,7 +193,11 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 		trs.SetRot(hg.Vec3(rot.x, rot.y - (hg.time_to_sec_f(dt)), rot.z))
 
 	scene.Update(dt)
-	hg.SubmitSceneToPipeline(0, scene, hg.IntRect(0, 0, res_x, res_y), True, pipeline, res, pipeline_aaa, pipeline_aaa_config, frame)
+	vid, pass_ids = hg.SubmitSceneToPipeline(0, scene, hg.IntRect(0, 0, res_x, res_y), True, pipeline, res, pipeline_aaa, pipeline_aaa_config, frame)
+
+	vid_scene_opaque = hg.GetSceneForwardPipelinePassViewId(pass_ids, hg.SFPP_Opaque)
+
+	draw_name_tag(vtx_2, vtx_4, pos, line_shader, name_shader, vid_scene_opaque, "Local", font, font_prg, text_uniform_values, text_render_state, cam.GetTransform().GetWorld())
 
 	hg.ImGuiBeginFrame(res_x, res_y, dt, mouse.GetState(), keyboard.GetState())
 	hg.SetView2D(0, 0, 0, res_x, res_y, -1, 0, hg.CF_Color | hg.CF_Depth, hg.Color.Green, 1, 0)
