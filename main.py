@@ -8,7 +8,7 @@ from statistics import median_low, median_high
 from name_tag import draw_name_tag
 
 # Init socket and server-linked variables
-UDP_IP = "127.0.0.1"
+UDP_IP = "192.168.0.175"
 UDP_PORT = 5005
 
 sock = socket.socket(socket.AF_INET,
@@ -102,6 +102,13 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 	mouse.Update()
 	dt = hg.TickClock()
 
+	min_node_pos = scene.GetNode('area_min').GetTransform().GetPos()
+	max_node_pos = scene.GetNode('area_max').GetTransform().GetPos()
+	min_x = min_node_pos.x
+	min_z = min_node_pos.z
+	max_x = max_node_pos.x
+	max_z = max_node_pos.z
+
 	if len(players) - 1 > players_spawned:
 		player_node, _  = hg.CreateInstanceFromAssets(scene, hg.TransformationMat4(hg.Vec3(players[players_spawned][0], 0, players[players_spawned][1]), hg.Vec3(players[players_spawned][2], players[players_spawned][3], players[players_spawned][4])), "objects_library/players/yellow_robot.scn", res, hg.GetForwardPipelineInfo())
 		player_lerp_node, _  = hg.CreateInstanceFromAssets(scene, hg.TransformationMat4(hg.Vec3(players[players_spawned][0], 0, players[players_spawned][1]), hg.Vec3(players[players_spawned][2], players[players_spawned][3], players[players_spawned][4])), "objects_library/players/ghost_uninterpolated_robot.scn", res, hg.GetForwardPipelineInfo())
@@ -149,10 +156,11 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 				predicted_pos = player_updated_pos + (pos_dif * adjusted_time)
 				rot_dif = player_updated_rot - player_old_rot
 				predicted_rot = player_updated_rot + (rot_dif * adjusted_time)
-				if show_pred:
+
+				if show_pred and predicted_pos.x < max_x and predicted_pos.x > min_x and predicted_pos.z < max_z and predicted_pos.z > min_z:
 					player_pred_transform.SetPos(predicted_pos)
 					player_pred_transform.SetRot(predicted_rot)
-				else:
+				elif not show_pred:
 					player_pred_transform.SetPos(hg.Vec3(-100, -100, -100))
 
 				time_awaiting_packet = 0
@@ -173,13 +181,6 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 	MESSAGE = [0, pos.x, pos.z, rot.x, rot.y, rot.z]
 	world = hg.RotationMat3(rot.x, rot.y, rot.z)
 	front = hg.GetZ(world)
-
-	min_node_pos = scene.GetNode('area_min').GetTransform().GetPos()
-	max_node_pos = scene.GetNode('area_max').GetTransform().GetPos()
-	min_x = min_node_pos.x
-	min_z = min_node_pos.z
-	max_x = max_node_pos.x
-	max_z = max_node_pos.z
 
 	simulated_pos_forward = pos + front * (hg.time_to_sec_f(dt) * 10)
 	simulated_pos_backward = pos - front * (hg.time_to_sec_f(dt) * 10)
