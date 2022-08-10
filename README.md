@@ -14,14 +14,22 @@ To run the prototype:
 
 After the compilation process finishes, you will see a `server_client_demo_compiled` folder next to resources ( `server_client_demo` ) folder.
 
-You can now execute the prototype from the folder you unzipped it to.
+You can now execute the server from the folder you unzipped it to.
+
+```bash
+C:/server_client_3D>python server.py
+```
+
+You can then execute as many clients as you'd like with the following command (you will get limited by packet size at some point which is a problem I need to fix).
 
 ```bash
 C:/server_client_3D>python main.py
 ```
 
+Make sure to reference the correct IP and have your ports open on local AND online networks.
+
 ## Screenshots
-* Player alone
+* Player alone with the latest update (name tag)
 ![Player alone](screenshots/0.png)
 
 * With a second player, showing his prediction and interpolation
@@ -35,3 +43,6 @@ C:/server_client_3D>python main.py
 
 * With a third player
 ![3 Players](screenshots/4.png)
+
+* With a third player (+ name tags that are a little bit blurred since the robots are moving)
+![3 Players](screenshots/5.png)

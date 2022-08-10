@@ -8,7 +8,7 @@ from statistics import median_low, median_high
 from name_tag import draw_name_tag
 
 # Init socket and server-linked variables
-UDP_IP = "192.168.0.175"
+UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
 
 sock = socket.socket(socket.AF_INET,
@@ -92,6 +92,7 @@ frame = 0
 show_lerp = True
 show_pred = True
 show_real = True
+auto_move = False
 vid_scene_opaque = 0
 vtx_2 = hg.Vertices(vtx_layout, 2)
 vtx_4 = hg.Vertices(vtx_layout, 4)
@@ -184,11 +185,11 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 
 	simulated_pos_forward = pos + front * (hg.time_to_sec_f(dt) * 10)
 	simulated_pos_backward = pos - front * (hg.time_to_sec_f(dt) * 10)
-	if True and simulated_pos_forward.x < max_x and simulated_pos_forward.x > min_x and simulated_pos_forward.z < max_z and simulated_pos_forward.z > min_z:
+	if (keyboard.Down(hg.K_Up) or auto_move) and simulated_pos_forward.x < max_x and simulated_pos_forward.x > min_x and simulated_pos_forward.z < max_z and simulated_pos_forward.z > min_z:
 		trs.SetPos(pos + front * (hg.time_to_sec_f(dt) * 10))
 	if keyboard.Down(hg.K_Down) and simulated_pos_backward.x < max_x and simulated_pos_backward.x > min_x and simulated_pos_backward.z < max_z and simulated_pos_backward.z > min_z:
 		trs.SetPos(pos - front * (hg.time_to_sec_f(dt) * 10))
-	if True:
+	if keyboard.Down(hg.K_Right) or auto_move:
 		trs.SetRot(hg.Vec3(rot.x, rot.y + (hg.time_to_sec_f(dt)), rot.z))
 	if keyboard.Down(hg.K_Left):
 		trs.SetRot(hg.Vec3(rot.x, rot.y - (hg.time_to_sec_f(dt)), rot.z))
@@ -204,7 +205,7 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 	hg.SetView2D(0, 0, 0, res_x, res_y, -1, 0, hg.CF_Color | hg.CF_Depth, hg.Color.Green, 1, 0)
 
 	hg.ImGuiSetNextWindowPos(hg.Vec2(10, 10))
-	hg.ImGuiSetNextWindowSize(hg.Vec2(300, 150), hg.ImGuiCond_Once)
+	hg.ImGuiSetNextWindowSize(hg.Vec2(300, 180), hg.ImGuiCond_Once)
 
 	if hg.ImGuiBegin('Online Robots Config'):
 		hg.ImGuiTextColored(hg.Color.Red, "Time waiting for packet : " + str(hg.time_to_sec_f(time_awaiting_packet)))
@@ -212,6 +213,7 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 		was_changed_lerp, show_lerp = hg.ImGuiCheckbox('Show Linear Interpolation', show_lerp)
 		was_changed_pred, show_pred = hg.ImGuiCheckbox('Show Prediction', show_pred)
 		was_changed_real, show_real = hg.ImGuiCheckbox('Show Real Position', show_real)
+		was_changed_move, auto_move = hg.ImGuiCheckbox('Automatic Robot Movement', auto_move)
 
 	hg.ImGuiEnd()
 
