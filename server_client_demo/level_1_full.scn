@@ -38,14 +38,14 @@
 		"fog_far": 0.0,
 		"fog_near": 0.0,
 		"probe": {
-			"irradiance_map": "core/pbr/probe.hdr.irradiance",
+			"irradiance_map": "probes/peppermint_powerplant.hdr.irradiance",
 			"parallax": 0.0,
 			"pos": [
 				0.0,
 				0.0,
 				0.0
 			],
-			"radiance_map": "core/pbr/probe.hdr.radiance",
+			"radiance_map": "probes/peppermint_powerplant.hdr.radiance",
 			"rot": [
 				0.0,
 				0.0,
@@ -61,25 +61,25 @@
 	},
 	"instances": [
 		{
-			"name": "objects_library/levels/level_1.scn"
+			"name": "objects_library/players/ghost_predict_robot.scn"
 		},
 		{
-			"name": "objects_library/players/red_robot.scn"
+			"name": "objects_library/players/ghost_uninterpolated_robot.scn"
+		},
+		{
+			"name": "objects_library/players/ghost_predict_robot.scn"
+		},
+		{
+			"name": "objects_library/players/ghost_uninterpolated_robot.scn"
 		},
 		{
 			"name": "objects_library/players/yellow_robot.scn"
 		},
 		{
-			"name": "objects_library/players/ghost_uninterpolated_robot.scn"
+			"name": "objects_library/players/red_robot.scn"
 		},
 		{
-			"name": "objects_library/players/ghost_predict_robot.scn"
-		},
-		{
-			"name": "objects_library/players/ghost_uninterpolated_robot.scn"
-		},
-		{
-			"name": "objects_library/players/ghost_predict_robot.scn"
+			"name": "objects_library/levels/level_1.scn"
 		}
 	],
 	"key_values": null,
@@ -91,7 +91,7 @@
 				255,
 				255
 			],
-			"diffuse_intensity": 1.0,
+			"diffuse_intensity": 5.0,
 			"inner_angle": 9.999999747378752e-05,
 			"outer_angle": 1.2217304706573486,
 			"priority": 1.0,
@@ -110,7 +110,7 @@
 				255,
 				255
 			],
-			"specular_intensity": 1.0,
+			"specular_intensity": 5.0,
 			"type": "spot"
 		}
 	],
@@ -125,7 +125,7 @@
 			],
 			"disabled": false,
 			"idx": 0,
-			"instance": 0,
+			"instance": 6,
 			"name": "level_1"
 		},
 		{
@@ -162,7 +162,7 @@
 			],
 			"disabled": false,
 			"idx": 3,
-			"instance": 1,
+			"instance": 5,
 			"name": "red_player"
 		},
 		{
@@ -175,7 +175,7 @@
 			],
 			"disabled": true,
 			"idx": 4,
-			"instance": 2,
+			"instance": 4,
 			"name": "yellow_player"
 		},
 		{
@@ -225,7 +225,7 @@
 			],
 			"disabled": true,
 			"idx": 8,
-			"instance": 4,
+			"instance": 2,
 			"name": "yellow_player_ghost_predict"
 		},
 		{
@@ -238,7 +238,7 @@
 			],
 			"disabled": true,
 			"idx": 9,
-			"instance": 5,
+			"instance": 1,
 			"name": "red_player_ghost_uninterpolate"
 		},
 		{
@@ -251,7 +251,7 @@
 			],
 			"disabled": true,
 			"idx": 10,
-			"instance": 6,
+			"instance": 0,
 			"name": "red_player_ghost_predict"
 		},
 		{
@@ -263,7 +263,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 109,
+			"idx": 11,
 			"name": "camrotation"
 		}
 	],
@@ -294,7 +294,7 @@
 				0.0
 			],
 			"rot": [
-				89.99995422363281,
+				89.99994659423828,
 				0.0,
 				0.0
 			],
@@ -305,7 +305,7 @@
 			]
 		},
 		{
-			"parent": 109,
+			"parent": 11,
 			"pos": [
 				-12.0,
 				10.0,
@@ -361,9 +361,9 @@
 		{
 			"parent": null,
 			"pos": [
-				-4.0,
+				-4.5,
 				0.0,
-				-4.0
+				-4.5
 			],
 			"rot": [
 				0.0,
@@ -379,9 +379,9 @@
 		{
 			"parent": null,
 			"pos": [
-				4.0,
+				4.5,
 				0.0,
-				4.0
+				4.5
 			],
 			"rot": [
 				0.0,
