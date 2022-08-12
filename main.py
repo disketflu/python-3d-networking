@@ -103,6 +103,10 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 	mouse.Update()
 	dt = hg.TickClock()
 
+	# _r = cam_rot.GetTransform().GetRot()
+	# _r.y = _r.y + hg.time_to_sec_f(dt)
+	# cam_rot.GetTransform().SetRot(_r)
+
 	min_node_pos = scene.GetNode('area_min').GetTransform().GetPos()
 	max_node_pos = scene.GetNode('area_max').GetTransform().GetPos()
 	min_x = min_node_pos.x
@@ -202,7 +206,6 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 	draw_name_tag(vtx_2, vtx_4, pos, line_shader, name_shader, vid_scene_opaque, "Local", font, font_prg, text_uniform_values, text_render_state, cam.GetTransform().GetWorld())
 
 	hg.ImGuiBeginFrame(res_x, res_y, dt, mouse.GetState(), keyboard.GetState())
-	hg.SetView2D(0, 0, 0, res_x, res_y, -1, 0, hg.CF_Color | hg.CF_Depth, hg.Color.Green, 1, 0)
 
 	hg.ImGuiSetNextWindowPos(hg.Vec2(10, 10))
 	hg.ImGuiSetNextWindowSize(hg.Vec2(300, 180), hg.ImGuiCond_Once)

@@ -27,25 +27,25 @@
 		"fog_far": 0.0,
 		"fog_near": 0.0,
 		"probe": {
-			"irradiance_map": "core/pbr/probe.hdr.irradiance",
-			"parallax": 0.0,
+			"irradiance_map": "probes/blue_sky.hdr.irradiance",
+			"parallax": 1.0,
 			"pos": [
 				0.0,
-				0.0,
+				5.0,
 				0.0
 			],
-			"radiance_map": "core/pbr/probe.hdr.radiance",
+			"radiance_map": "probes/blue_sky.hdr.radiance",
 			"rot": [
 				0.0,
 				0.0,
 				0.0
 			],
 			"scl": [
-				1.0,
-				1.0,
-				1.0
+				15.0,
+				15.0,
+				15.0
 			],
-			"type": "sphere"
+			"type": "cube"
 		}
 	},
 	"instances": [
@@ -186,6 +186,33 @@
 		},
 		{
 			"name": "objects_library/blocs/scifi_block_1m_corner.scn"
+		},
+		{
+			"name": "objects_library/blocs/scifi_block_2m_corner_emissive.scn"
+		},
+		{
+			"name": "objects_library/blocs/scifi_block_1m_corner.scn"
+		},
+		{
+			"name": "objects_library/blocs/scifi_block_2m_corner_emissive.scn"
+		},
+		{
+			"name": "objects_library/blocs/scifi_block_1m_corner.scn"
+		},
+		{
+			"name": "objects_library/blocs/scifi_block_2m_corner_emissive.scn"
+		},
+		{
+			"name": "objects_library/blocs/scifi_block_1m_corner.scn"
+		},
+		{
+			"name": "objects_library/blocs/scifi_block_2m_corner_emissive.scn"
+		},
+		{
+			"name": "objects_library/blocs/scifi_block_1m_corner.scn"
+		},
+		{
+			"name": "objects_library/blocs/cube.scn"
 		}
 	],
 	"key_values": null,
@@ -407,7 +434,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 32,
+			"idx": 16,
 			"instance": 42,
 			"name": "scifi_block_1m_edge"
 		},
@@ -420,7 +447,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 34,
+			"idx": 17,
 			"instance": 41,
 			"name": "scifi_block_1m_edge"
 		},
@@ -433,7 +460,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 36,
+			"idx": 18,
 			"instance": 40,
 			"name": "scifi_block_1m_edge"
 		},
@@ -446,7 +473,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 38,
+			"idx": 19,
 			"instance": 39,
 			"name": "scifi_block_1m_edge"
 		},
@@ -459,7 +486,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 40,
+			"idx": 20,
 			"instance": 38,
 			"name": "scifi_block_1m_edge"
 		},
@@ -472,7 +499,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 42,
+			"idx": 21,
 			"instance": 37,
 			"name": "scifi_block_1m_edge"
 		},
@@ -485,7 +512,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 44,
+			"idx": 22,
 			"instance": 36,
 			"name": "scifi_block_1m_edge"
 		},
@@ -498,7 +525,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 46,
+			"idx": 23,
 			"instance": 35,
 			"name": "scifi_block_1m_edge"
 		},
@@ -511,7 +538,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 48,
+			"idx": 24,
 			"instance": 34,
 			"name": "scifi_block_1m_edge"
 		},
@@ -524,7 +551,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 50,
+			"idx": 25,
 			"instance": 33,
 			"name": "scifi_block_1m_edge"
 		},
@@ -537,7 +564,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 52,
+			"idx": 26,
 			"instance": 32,
 			"name": "scifi_block_1m_edge"
 		},
@@ -550,7 +577,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 54,
+			"idx": 27,
 			"instance": 31,
 			"name": "scifi_block_1m_edge"
 		},
@@ -563,7 +590,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 56,
+			"idx": 28,
 			"instance": 30,
 			"name": "scifi_block_1m_edge"
 		},
@@ -576,7 +603,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 58,
+			"idx": 29,
 			"instance": 29,
 			"name": "scifi_block_1m_edge"
 		},
@@ -589,7 +616,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 60,
+			"idx": 30,
 			"instance": 28,
 			"name": "scifi_block_1m_edge"
 		},
@@ -602,7 +629,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 62,
+			"idx": 31,
 			"instance": 27,
 			"name": "scifi_block_1m_edge"
 		},
@@ -615,7 +642,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 64,
+			"idx": 32,
 			"instance": 0,
 			"name": "scifi_block_1m_edge"
 		},
@@ -628,7 +655,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 66,
+			"idx": 33,
 			"instance": 1,
 			"name": "scifi_block_1m_edge"
 		},
@@ -641,7 +668,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 68,
+			"idx": 34,
 			"instance": 2,
 			"name": "scifi_block_1m_edge"
 		},
@@ -654,7 +681,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 70,
+			"idx": 35,
 			"instance": 3,
 			"name": "scifi_block_1m_edge"
 		},
@@ -667,7 +694,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 72,
+			"idx": 36,
 			"instance": 4,
 			"name": "scifi_block_1m_edge"
 		},
@@ -680,7 +707,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 74,
+			"idx": 37,
 			"instance": 5,
 			"name": "scifi_block_1m_edge"
 		},
@@ -693,7 +720,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 76,
+			"idx": 38,
 			"instance": 6,
 			"name": "scifi_block_1m_edge"
 		},
@@ -706,7 +733,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 78,
+			"idx": 39,
 			"instance": 7,
 			"name": "scifi_block_1m_edge"
 		},
@@ -719,7 +746,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 80,
+			"idx": 40,
 			"instance": 8,
 			"name": "scifi_block_1m_edge"
 		},
@@ -732,7 +759,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 82,
+			"idx": 41,
 			"instance": 9,
 			"name": "scifi_block_1m_edge"
 		},
@@ -745,7 +772,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 84,
+			"idx": 42,
 			"instance": 10,
 			"name": "scifi_block_1m_edge"
 		},
@@ -758,7 +785,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 86,
+			"idx": 43,
 			"instance": 11,
 			"name": "scifi_block_1m_edge"
 		},
@@ -771,7 +798,7 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 88,
+			"idx": 44,
 			"instance": 12,
 			"name": "scifi_block_1m_edge"
 		},
@@ -784,9 +811,126 @@
 				4294967295
 			],
 			"disabled": false,
-			"idx": 90,
+			"idx": 45,
 			"instance": 13,
 			"name": "scifi_block_1m_edge"
+		},
+		{
+			"components": [
+				48,
+				4294967295,
+				4294967295,
+				4294967295,
+				4294967295
+			],
+			"disabled": true,
+			"idx": 46,
+			"instance": 48,
+			"name": "scifi_block_2m_corner_emissive"
+		},
+		{
+			"components": [
+				53,
+				4294967295,
+				4294967295,
+				4294967295,
+				4294967295
+			],
+			"disabled": true,
+			"idx": 47,
+			"instance": 53,
+			"name": "scifi_block_1m_corner"
+		},
+		{
+			"components": [
+				46,
+				4294967295,
+				4294967295,
+				4294967295,
+				4294967295
+			],
+			"disabled": true,
+			"idx": 48,
+			"instance": 46,
+			"name": "scifi_block_2m_corner_emissive"
+		},
+		{
+			"components": [
+				52,
+				4294967295,
+				4294967295,
+				4294967295,
+				4294967295
+			],
+			"disabled": true,
+			"idx": 49,
+			"instance": 52,
+			"name": "scifi_block_2m_corner_emissive"
+		},
+		{
+			"components": [
+				51,
+				4294967295,
+				4294967295,
+				4294967295,
+				4294967295
+			],
+			"disabled": true,
+			"idx": 50,
+			"instance": 51,
+			"name": "scifi_block_1m_corner"
+		},
+		{
+			"components": [
+				49,
+				4294967295,
+				4294967295,
+				4294967295,
+				4294967295
+			],
+			"disabled": true,
+			"idx": 51,
+			"instance": 49,
+			"name": "scifi_block_1m_corner"
+		},
+		{
+			"components": [
+				50,
+				4294967295,
+				4294967295,
+				4294967295,
+				4294967295
+			],
+			"disabled": true,
+			"idx": 52,
+			"instance": 50,
+			"name": "scifi_block_2m_corner_emissive"
+		},
+		{
+			"components": [
+				47,
+				4294967295,
+				4294967295,
+				4294967295,
+				4294967295
+			],
+			"disabled": true,
+			"idx": 53,
+			"instance": 47,
+			"name": "scifi_block_1m_corner"
+		},
+		{
+			"components": [
+				54,
+				4294967295,
+				4294967295,
+				4294967295,
+				4294967295
+			],
+			"disabled": false,
+			"idx": 54,
+			"instance": 54,
+			"name": "cube"
 		}
 	],
 	"transforms": [
@@ -798,7 +942,7 @@
 				-5.5
 			],
 			"rot": [
-				0.0,
+				-0.0,
 				0.0,
 				0.0
 			],
@@ -1616,6 +1760,168 @@
 				1.0,
 				1.0,
 				1.0
+			]
+		},
+		{
+			"parent": null,
+			"pos": [
+				-6.800000190734863,
+				1.2499990463256836,
+				6.800000190734863
+			],
+			"rot": [
+				-0.0,
+				-90.0,
+				0.0
+			],
+			"scl": [
+				1.2499996423721313,
+				1.25,
+				1.2499996423721313
+			]
+		},
+		{
+			"parent": null,
+			"pos": [
+				-6.599999904632568,
+				-9.5367431640625e-07,
+				-6.599999904632568
+			],
+			"rot": [
+				0.0,
+				180.0,
+				0.0
+			],
+			"scl": [
+				1.4999998807907104,
+				1.5,
+				1.4999998807907104
+			]
+		},
+		{
+			"parent": null,
+			"pos": [
+				6.800000190734863,
+				1.25,
+				-6.800000190734863
+			],
+			"rot": [
+				-0.0,
+				90.0,
+				0.0
+			],
+			"scl": [
+				1.25,
+				1.25,
+				1.25
+			]
+		},
+		{
+			"parent": null,
+			"pos": [
+				6.599999904632568,
+				0.0,
+				-6.599999904632568
+			],
+			"rot": [
+				0.0,
+				90.0,
+				0.0
+			],
+			"scl": [
+				1.5,
+				1.5,
+				1.5
+			]
+		},
+		{
+			"parent": null,
+			"pos": [
+				-6.800000190734863,
+				1.2499990463256836,
+				-6.800000190734863
+			],
+			"rot": [
+				-0.0,
+				180.0,
+				0.0
+			],
+			"scl": [
+				1.2499996423721313,
+				1.25,
+				1.2499996423721313
+			]
+		},
+		{
+			"parent": null,
+			"pos": [
+				6.599999904632568,
+				0.0,
+				6.599999904632568
+			],
+			"rot": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"scl": [
+				1.5,
+				1.5,
+				1.5
+			]
+		},
+		{
+			"parent": null,
+			"pos": [
+				6.800000190734863,
+				1.25,
+				6.800000190734863
+			],
+			"rot": [
+				-0.0,
+				0.0,
+				0.0
+			],
+			"scl": [
+				1.25,
+				1.25,
+				1.25
+			]
+		},
+		{
+			"parent": null,
+			"pos": [
+				-6.599999904632568,
+				-9.5367431640625e-07,
+				6.599999904632568
+			],
+			"rot": [
+				0.0,
+				-90.0,
+				0.0
+			],
+			"scl": [
+				1.4999998807907104,
+				1.5,
+				1.4999998807907104
+			]
+		},
+		{
+			"parent": null,
+			"pos": [
+				0.0,
+				-0.25,
+				0.0
+			],
+			"rot": [
+				-0.0,
+				0.0,
+				0.0
+			],
+			"scl": [
+				15.0,
+				0.20000000298023224,
+				15.0
 			]
 		}
 	]
