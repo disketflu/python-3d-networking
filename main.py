@@ -138,7 +138,6 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 			time_diff = updated_time - old_time
 
 			time_deltas.append(time_diff)
-			time_deltas.sort()
 			if len(time_deltas) > 20: #linearize the delta for the last 20 packets only 
 				time_deltas.pop()
 
