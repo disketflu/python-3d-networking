@@ -8,7 +8,7 @@ from statistics import median_low, median_high
 from name_tag import draw_name_tag
 
 # Init socket and server-linked variables
-UDP_IP = "127.0.0.1"
+UDP_IP = "192.168.0.175"
 UDP_PORT = 5005
 
 sock = socket.socket(socket.AF_INET,
@@ -17,28 +17,32 @@ sock = socket.socket(socket.AF_INET,
 MESSAGE = [0, 0, 0, 0, 0, 0] # MESSAGE CODE, POS_X, POS_Z, ROT_X_Y_Z
 players = []
 old_players = players
+next_players = players
 players_spawned = 0
 players_instances = []
-time_deltas = []
-time_awaiting_packet = 0
+global_time_end = 0
 
 def handleSnd():
 	global MESSAGE
 	while True:
 		data = pickle.dumps(MESSAGE)
 		sock.sendto(data, (UDP_IP, UDP_PORT))
-		time.sleep(0.1)
+		time.sleep(0.01)
 
 def handleRcv():
-	global players, old_players
+	global players, old_players, global_time_end, next_players
 	while True:
 		try:
 			data, addr = sock.recvfrom(1024)
 			decoded_data = pickle.loads(data)
 			if decoded_data[0] == 1:
-				old_players = players.copy()
-				players = decoded_data[1]
-				players.append(time.time())
+				if time.time() < global_time_end and global_time_end != 0:
+					next_players = decoded_data[1]
+					next_players.append(time.time())
+				else:
+					old_players = players.copy()
+					players = decoded_data[1]
+					players.append(time.time())
 
 		except Exception as err:
 			print(err)
@@ -97,7 +101,6 @@ vid_scene_opaque = 0
 vtx_2 = hg.Vertices(vtx_layout, 2)
 vtx_4 = hg.Vertices(vtx_layout, 4)
 
-
 while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 	keyboard.Update()
 	mouse.Update()
@@ -123,60 +126,80 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 		players_spawned += 1
 		print("Spawned a new player")
 
-	for pinstance in players_instances:
-		if len(old_players) == len(players):
-			player_transform = pinstance[0][0].GetTransform()
-			player_nolerp_transform = pinstance[0][1].GetTransform()
-			player_pred_transform = pinstance[0][2].GetTransform()
-			player_id = pinstance[1]
-			player_updated_pos = hg.Vec3(players[player_id][0], 0, players[player_id][1])
-			player_updated_rot = hg.Vec3(players[player_id][2], players[player_id][3], players[player_id][4])
-			player_old_pos = hg.Vec3(old_players[player_id][0], 0, old_players[player_id][1])
-			player_old_rot = hg.Vec3(old_players[player_id][2], old_players[player_id][3], old_players[player_id][4])
-			updated_time = players[-1]
-			old_time = old_players[-1]
-			time_diff = updated_time - old_time
-
-			time_deltas.append(time_diff)
-			if len(time_deltas) > 20: #linearize the delta for the last 20 packets only 
-				time_deltas.pop()
-
-			avg_time_diff = (median_low(time_deltas) + median_high(time_deltas)) / 2
-
-			time_end = updated_time + avg_time_diff
-			if time.time() < time_end:
+	try:
+		for pinstance in players_instances:
+			if len(old_players) == len(players):
+				player_transform = pinstance[0][0].GetTransform()
+				player_nolerp_transform = pinstance[0][1].GetTransform()
+				player_pred_transform = pinstance[0][2].GetTransform()
+				player_id = pinstance[1]
+				player_updated_pos = hg.Vec3(players[player_id][0], 0, players[player_id][1])
+				player_updated_rot = hg.Vec3(players[player_id][2], players[player_id][3], players[player_id][4])
+				player_old_pos = hg.Vec3(old_players[player_id][0], 0, old_players[player_id][1])
+				player_old_rot = hg.Vec3(old_players[player_id][2], old_players[player_id][3], old_players[player_id][4])
+				updated_time = players[-1]
+				old_time = old_players[-1]
+				time_diff = updated_time - old_time
+				time_end = updated_time + time_diff
+				global_time_end = time_end
 				adjusted_time = RangeAdjust(time.time(), updated_time, time_end, 0, 1)
 				wanted_pos = hg.Lerp(player_old_pos, player_updated_pos, adjusted_time)
 				wanted_rot = hg.Lerp(player_old_rot, player_updated_rot, adjusted_time)
+
+				if time.time() > time_end and len(next_players) > 0:
+					if next_players[-1] > updated_time:
+						lost_time = time.time() - next_players[-1]
+						old_players = players.copy()
+						old_players[-1] += lost_time
+						next_players[-1] = time.time()
+						players = next_players.copy()
+						player_updated_pos = hg.Vec3(players[player_id][0], 0, players[player_id][1])
+						player_updated_rot = hg.Vec3(players[player_id][2], players[player_id][3], players[player_id][4])
+						current_pos = player_transform.GetPos()
+						current_rot = player_transform.GetRot()
+						old_players[player_id][0] = current_pos.x
+						old_players[player_id][1] = current_pos.z
+						old_players[player_id][2] = current_rot.x
+						old_players[player_id][3] = current_rot.y
+						old_players[player_id][4] = current_rot.z
+						player_old_pos = hg.Vec3(old_players[player_id][0], 0, old_players[player_id][1])
+						player_old_rot = hg.Vec3(old_players[player_id][2], old_players[player_id][3], old_players[player_id][4])
+						updated_time = players[-1]
+						old_time = old_players[-1]
+
+						time_diff = updated_time - old_time
+
+						time_end = updated_time + time_diff
+						global_time_end = time_end
+						adjusted_time = RangeAdjust(time.time(), updated_time, time_end, 0, 1)
+						wanted_pos = hg.Lerp(player_old_pos, player_updated_pos, adjusted_time)
+						wanted_rot = hg.Lerp(player_old_rot, player_updated_rot, adjusted_time)
+
 				draw_name_tag(vtx_2, vtx_4, wanted_pos, line_shader, name_shader, vid_scene_opaque, "Remote " + str(pinstance[1] + 1), font, font_prg, text_uniform_values, text_render_state, cam.GetTransform().GetWorld())
 				if show_lerp:
 					player_transform.SetPos(wanted_pos)
 					player_transform.SetRot(wanted_rot)
 				else:
 					player_transform.SetPos(hg.Vec3(-100, -100, -100))
-
 				# prediction
 				pos_dif = player_updated_pos - player_old_pos
 				predicted_pos = player_updated_pos + (pos_dif * adjusted_time)
 				rot_dif = player_updated_rot - player_old_rot
 				predicted_rot = player_updated_rot + (rot_dif * adjusted_time)
-
 				if show_pred and predicted_pos.x < max_x and predicted_pos.x > min_x and predicted_pos.z < max_z and predicted_pos.z > min_z:
 					player_pred_transform.SetPos(predicted_pos)
 					player_pred_transform.SetRot(predicted_rot)
 				elif not show_pred:
 					player_pred_transform.SetPos(hg.Vec3(-100, -100, -100))
 
-				time_awaiting_packet = 0
-			else:
-				time_awaiting_packet += dt
-				draw_name_tag(vtx_2, vtx_4, player_updated_pos, line_shader, name_shader, vid_scene_opaque, "Remote " + str(pinstance[1] + 1), font, font_prg, text_uniform_values, text_render_state, cam.GetTransform().GetWorld())
+				if show_real:
+					player_nolerp_transform.SetPos(hg.Vec3(players[player_id][0], 0, players[player_id][1]))
+					player_nolerp_transform.SetRot(hg.Vec3(players[player_id][2], players[player_id][3], players[player_id][4]))			
+				else:
+					player_nolerp_transform.SetPos(hg.Vec3(-100, -100, -100))
 
-			if show_real:
-				player_nolerp_transform.SetPos(hg.Vec3(players[player_id][0], 0, players[player_id][1]))
-				player_nolerp_transform.SetRot(hg.Vec3(players[player_id][2], players[player_id][3], players[player_id][4]))			
-			else:
-				player_nolerp_transform.SetPos(hg.Vec3(-100, -100, -100))
+	except Exception as err:
+		print(err)
 
 	trs = scene.GetNode('red_player').GetTransform()
 	pos = trs.GetPos()
@@ -210,8 +233,6 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 	hg.ImGuiSetNextWindowSize(hg.Vec2(300, 180), hg.ImGuiCond_Once)
 
 	if hg.ImGuiBegin('Online Robots Config'):
-		hg.ImGuiTextColored(hg.Color.Red, "Time waiting for packet : " + str(hg.time_to_sec_f(time_awaiting_packet)))
-		hg.ImGuiSeparator()
 		was_changed_lerp, show_lerp = hg.ImGuiCheckbox('Show Linear Interpolation', show_lerp)
 		was_changed_pred, show_pred = hg.ImGuiCheckbox('Show Prediction', show_pred)
 		was_changed_real, show_real = hg.ImGuiCheckbox('Show Real Position', show_real)
