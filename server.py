@@ -34,7 +34,16 @@ def handleRcv():
         try:
             decoded_data = pickle.loads(data)
             if decoded_data[0] == 0:
-                clients[addr] = [decoded_data[1], decoded_data[2], decoded_data[3], decoded_data[4], decoded_data[5]]
+                if addr in clients:
+                    if decoded_data[6] > clients[addr][5]:
+                        clients[addr] = [decoded_data[1], decoded_data[2], decoded_data[3], decoded_data[4], decoded_data[5], decoded_data[6]]
+                    else:
+                        print("---paquet client refuse---\n")
+                        print("Id paquet recu : " + str(decoded_data[3]))
+                        print("Id client actuel : " + str(clients[addr][3]))
+                else:
+                    clients[addr] = [decoded_data[1], decoded_data[2], decoded_data[3], decoded_data[4], decoded_data[5], decoded_data[6]]
+
 
         except Exception as err:
             print(err)

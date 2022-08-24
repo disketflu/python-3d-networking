@@ -8,29 +8,35 @@ from statistics import median_low, median_high
 from name_tag import draw_name_tag
 
 # Init socket and server-linked variables
-UDP_IP = "192.168.0.175"
+UDP_IP = "192.168.0.195"
+# UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
 
 sock = socket.socket(socket.AF_INET,
 					 socket.SOCK_DGRAM)
 
-MESSAGE = [0, 0, 0, 0, 0, 0] # MESSAGE CODE, POS_X, POS_Z, ROT_X_Y_Z
+MESSAGE = [0, 0, 0, 0, 0, 0, 0] # MESSAGE CODE, POS_X, POS_Z, ROT_X_Y_Z, SEND_ID
 players = []
+lerped_players = players
 old_players = players
 next_players = players
 players_spawned = 0
 players_instances = []
 global_time_end = 0
+global_last_packet = 0
+time_deltas = [0.1]
+send_id = 0
 
 def handleSnd():
-	global MESSAGE
+	global MESSAGE, send_id
 	while True:
 		data = pickle.dumps(MESSAGE)
 		sock.sendto(data, (UDP_IP, UDP_PORT))
-		time.sleep(0.01)
+		send_id += 1
+		time.sleep(0.0333)
 
 def handleRcv():
-	global players, old_players, global_time_end, next_players
+	global players, old_players, global_time_end, next_players, global_last_packet, time_deltas
 	while True:
 		try:
 			data, addr = sock.recvfrom(1024)
@@ -39,10 +45,27 @@ def handleRcv():
 				if time.time() < global_time_end and global_time_end != 0:
 					next_players = decoded_data[1]
 					next_players.append(time.time())
+					if global_last_packet == 0:
+						global_last_packet = time.time()
+					else:
+						time_deltas.insert(0, time.time() - global_last_packet)
+						global_last_packet = time.time()
+						if len(time_deltas) > 20:
+							time_deltas.pop()
 				else:
-					old_players = players.copy()
+					if len(players) == len(lerped_players):
+						old_players = lerped_players.copy()
+					else: 
+						old_players = players.copy()
 					players = decoded_data[1]
 					players.append(time.time())
+					if global_last_packet == 0:
+						global_last_packet = time.time()
+					else:
+						time_deltas.insert(0, time.time() - global_last_packet)
+						global_last_packet = time.time()
+						if len(time_deltas) > 20:
+							time_deltas.pop()
 
 		except Exception as err:
 			print(err)
@@ -126,6 +149,8 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 		players_spawned += 1
 		print("Spawned a new player")
 
+	new_lerped_players = []
+
 	try:
 		for pinstance in players_instances:
 			if len(old_players) == len(players):
@@ -138,9 +163,8 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 				player_old_pos = hg.Vec3(old_players[player_id][0], 0, old_players[player_id][1])
 				player_old_rot = hg.Vec3(old_players[player_id][2], old_players[player_id][3], old_players[player_id][4])
 				updated_time = players[-1]
-				old_time = old_players[-1]
-				time_diff = updated_time - old_time
-				time_end = updated_time + time_diff
+				time_delta = sum(time_deltas) / len(time_deltas)
+				time_end = updated_time + time_delta
 				global_time_end = time_end
 				adjusted_time = RangeAdjust(time.time(), updated_time, time_end, 0, 1)
 				wanted_pos = hg.Lerp(player_old_pos, player_updated_pos, adjusted_time)
@@ -148,9 +172,7 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 
 				if time.time() > time_end and len(next_players) > 0:
 					if next_players[-1] > updated_time:
-						lost_time = time.time() - next_players[-1]
 						old_players = players.copy()
-						old_players[-1] += lost_time
 						next_players[-1] = time.time()
 						players = next_players.copy()
 						player_updated_pos = hg.Vec3(players[player_id][0], 0, players[player_id][1])
@@ -167,14 +189,14 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 						updated_time = players[-1]
 						old_time = old_players[-1]
 
-						time_diff = updated_time - old_time
-
-						time_end = updated_time + time_diff
+						time_delta = sum(time_deltas) / len(time_deltas)
+						time_end = updated_time + time_delta
 						global_time_end = time_end
 						adjusted_time = RangeAdjust(time.time(), updated_time, time_end, 0, 1)
 						wanted_pos = hg.Lerp(player_old_pos, player_updated_pos, adjusted_time)
 						wanted_rot = hg.Lerp(player_old_rot, player_updated_rot, adjusted_time)
 
+				new_lerped_players.append([wanted_pos.x, wanted_pos.z, wanted_rot.x, wanted_rot.y, wanted_rot.z])
 				draw_name_tag(vtx_2, vtx_4, wanted_pos, line_shader, name_shader, vid_scene_opaque, "Remote " + str(pinstance[1] + 1), font, font_prg, text_uniform_values, text_render_state, cam.GetTransform().GetWorld())
 				if show_lerp:
 					player_transform.SetPos(wanted_pos)
@@ -201,11 +223,13 @@ while not hg.ReadKeyboard().Key(hg.K_Escape) and hg.IsWindowOpen(win):
 	except Exception as err:
 		print(err)
 
+	lerped_players = new_lerped_players
+
 	trs = scene.GetNode('red_player').GetTransform()
 	pos = trs.GetPos()
 	rot = trs.GetRot()
 
-	MESSAGE = [0, pos.x, pos.z, rot.x, rot.y, rot.z]
+	MESSAGE = [0, pos.x, pos.z, rot.x, rot.y, rot.z, send_id]
 	world = hg.RotationMat3(rot.x, rot.y, rot.z)
 	front = hg.GetZ(world)
 
